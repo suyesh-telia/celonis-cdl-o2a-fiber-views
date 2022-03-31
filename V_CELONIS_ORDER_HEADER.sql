@@ -2,10 +2,11 @@ CREATE VIEW prod_swe_access.V_CELONIS_ORDER_HEADER AS (
     SELECT 
         orders.created_date,
         orders.row_id,
-        orders.ts_csr_id, -- no such column as ts_cid in orders 
+        accounts.ts_customer_id as ts_cid, 
         orders.order_date,
         orders.order_number,
         orders.requested_ship_date,
+        orders.revision,
         orders.status, -- order_status in specification
         orders.ts_channel_name,
         orders.ts_order_sub_type,

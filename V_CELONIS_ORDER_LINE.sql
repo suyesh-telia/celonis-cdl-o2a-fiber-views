@@ -8,6 +8,7 @@ CREATE VIEW prod_swe_access.V_CELONIS_ORDER_LINE AS (
         order_lines.row_id,
         order_lines.order_header_id,
         order_lines.product_id,
+        order_lines.line_number,
         order_lines.status, -- orderline_status in specification
         order_lines.last_updated_date, --orderline_last_updated_date in specification
         order_lines.completed_date, -- orderline_completed_date in specification
