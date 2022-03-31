@@ -13,8 +13,8 @@ CREATE VIEW prod_swe_access.V_CELONIS_ORDER_LINE AS (
         order_lines.last_updated_date, --orderline_last_updated_date in specification
         order_lines.completed_date, -- orderline_completed_date in specification
         order_lines.expected_delivery_date,
-        order_lines.ts_mdu_activation_type, -- ts_multi_dwelling_unit_activation_type in specification
-        order_lines.ts_mdu_delivery_contract_num, -- ts_multi_dwelling_unit_delivery_contract_num in specification
+        IF(order_lines.ts_mdu_activation_type IS NULL, 'False', 'True') as ts_multi_dwelling_unit_activation_type, -- ts_multi_dwelling_unit_activation_type in specification
+        IF(order_lines.ts_mdu_delivery_contract_num IS NULL, 'False', 'True') as ts_multi_dwelling_unit_delivery_contract_num -- ts_multi_dwelling_unit_delivery_contract_num in specification
         order_lines.milestone, -- order_milestone in specification
         order_lines.ts_hardware_milestone,
         order_lines.ing_day,
