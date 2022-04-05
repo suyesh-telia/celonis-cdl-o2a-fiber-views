@@ -7,7 +7,7 @@ CREATE VIEW prod_swe_access.V_CELONIS_ORDER_HEADER AS (
         orders.order_number,
         orders.requested_ship_date,
         orders.revision,
-        orders.status, -- order_status in specification
+        orders.status as order_status,
         orders.ts_channel_name,
         orders.ts_order_sub_type,
         orders.last_updated_date,
@@ -18,7 +18,7 @@ CREATE VIEW prod_swe_access.V_CELONIS_ORDER_HEADER AS (
     FROM
         prod_swe_base.t_siebel_order orders
     INNER JOIN 
-        prod_swe_base.t_siebel_order_line_item order_lines -- let me know whether we should join with base or access latest state
+        prod_swe_access.t_siebel_order_line_item_latest_state order_lines
     ON
         orders.row_id = order_lines.order_header_id
     INNER JOIN 
@@ -45,5 +45,4 @@ CREATE VIEW prod_swe_access.V_CELONIS_ORDER_HEADER AS (
         permissions.cust_helix_pur1033 IS NULL
         AND
         blacklist.export_to_cloud IS NULL
-
-)
+);
