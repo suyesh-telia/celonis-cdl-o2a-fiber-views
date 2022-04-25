@@ -1,5 +1,6 @@
 CREATE VIEW prod_swe_access.V_CELONIS_PRODUCTS AS (
-    SELECT 
+    SELECT
+        DISTINCT
         siebel_products.row_id,
         siebel_products.name as product_name,
         siebel_products.product_category,

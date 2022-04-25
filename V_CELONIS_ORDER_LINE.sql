@@ -1,5 +1,6 @@
 CREATE VIEW prod_swe_access.V_CELONIS_ORDER_LINE AS (
-    SELECT 
+    SELECT
+        DISTINCT
         order_lines.action_code,
         order_lines.created_date as orderline_created_date,
         order_lines.due_date as ordeline_due_date,
@@ -38,8 +39,8 @@ CREATE VIEW prod_swe_access.V_CELONIS_ORDER_LINE AS (
     ON
         accounts.ts_customer_id = blacklist.tscid
     WHERE 
-        order_lines.created_date >= '2021-06-01'
-        AND 
+        order_lines.completed_date >= '2021-06-01'
+        AND
         permissions.cust_helix_pur1033 IS NULL
         AND
         blacklist.export_to_cloud IS NULL
