@@ -1,5 +1,6 @@
 CREATE VIEW prod_swe_access.V_CELONIS_ORDER_HEADER AS (
-    SELECT 
+    SELECT
+        DISTINCT
         orders.created_date,
         orders.row_id,
         accounts.ts_customer_id as ts_cid, 

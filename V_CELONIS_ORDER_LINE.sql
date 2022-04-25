@@ -1,5 +1,6 @@
 CREATE VIEW prod_swe_access.V_CELONIS_ORDER_LINE AS (
-    SELECT 
+    SELECT
+        DISTINCT
         order_lines.action_code,
         order_lines.created_date as orderline_created_date,
         order_lines.due_date as ordeline_due_date,
