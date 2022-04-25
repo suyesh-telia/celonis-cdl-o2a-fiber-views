@@ -38,8 +38,8 @@ CREATE VIEW prod_swe_access.V_CELONIS_ORDER_HEADER AS (
     ON
         accounts.ts_customer_id = blacklist.tscid
     WHERE 
-        orders.created_date >= '2021-06-01'
-        AND
+        --orders.created_date >= '2021-06-01'
+        --AND
         order_lines.created_date >= '2021-06-01'
         AND
         permissions.cust_helix_pur1033 IS NULL
