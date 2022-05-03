@@ -2,19 +2,19 @@ CREATE VIEW prod_swe_access.V_CELONIS_ORDER_HEADER AS (
     SELECT
         orders.created_date,
         orders.row_id,
-        accounts.ts_customer_id as ts_cid,
+        accounts.ts_customer_id AS ts_cid,
         orders.order_date,
         orders.order_number,
         orders.requested_ship_date,
         orders.revision,
-        orders.status as order_status,
+        orders.status AS order_status,
         orders.ts_channel_name,
         orders.ts_order_sub_type,
         MIN(orders.last_updated_date),
         CASE WHEN colle_orders.order_row_id_qo IS NOT NUll THEN 'Y' ELSE 'N' END AS collective_order_flag,
         colle_orders.ts_mdu_network_name,
         MIN(orders.ing_year*10000+orders.ing_month*100+orders.ing_day) ingestion_date,
-        MIN(orders.cdl_ingest_time) as cdl_ingest_time
+        MIN(orders.cdl_ingest_time) AS cdl_ingest_time
     FROM
         prod_swe_base.t_siebel_order orders
     INNER JOIN
@@ -77,16 +77,28 @@ CREATE VIEW prod_swe_access.V_CELONIS_ORDER_HEADER AS (
             AND
             prd.billing_type = 'Subscription'
         WHERE
-            oli.completed_date >= '2021-06-01' or oli.created_date >= '2021-06-01'
+            oli.completed_date >= '2021-06-01' OR oli.created_date >= '2021-06-01'
     )
         AS colle_orders
         ON
-            colle_orders.order_row_id_qo = orders.row_id
+           colle_orders.order_row_id_qo = orders.row_id
     WHERE
-        (order_lines.completed_date >= '2021-06-01' or order_lines.created_date >= '2021-06-01')
+        (order_lines.completed_date >= '2021-06-01' OR order_lines.created_date >= '2021-06-01')
         AND
         permissions.cust_helix_pur1033 IS NULL
         AND
         blacklist.export_to_cloud IS NULL
-    GROUP BY 1,2,3,4,5,6,7,8,9,10,12,13
+    GROUP BY
+        orders.created_date,
+        orders.row_id,
+        accounts.ts_customer_id,
+        orders.order_date,
+        orders.order_number,
+        orders.requested_ship_date,
+        orders.revision,
+        orders.status,
+        orders.ts_channel_name,
+        orders.ts_order_sub_type,
+        colle_orders.order_row_id_qo,
+        colle_orders.ts_mdu_network_name
 );
