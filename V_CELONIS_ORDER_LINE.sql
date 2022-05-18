@@ -1,4 +1,4 @@
-CREATE VIEW prod_swe_access.V_CELONIS_ORDER_LINE AS (
+CREATE OR REPLACE VIEW prod_swe_access.V_CELONIS_ORDER_LINE AS (
     SELECT
         order_lines.action_code,
         order_lines.created_date AS orderline_created_date,
@@ -15,14 +15,15 @@ CREATE VIEW prod_swe_access.V_CELONIS_ORDER_LINE AS (
         IF(order_lines.ts_mdu_delivery_contract_num IS NULL, 'False', 'True') AS ts_multi_dwelling_unit_delivery_contract_num,
         order_lines.milestone AS order_milestone,
         order_lines.ts_hardware_milestone,
+        addr.ts_fiber_status,
         MIN(order_lines.ing_year*10000+order_lines.ing_month*100+order_lines.ing_day) ingestion_date,
         MIN(order_lines.cdl_ingest_time) AS cdl_ingest_time
     FROM
         prod_swe_base.t_siebel_order_line_item order_lines
     INNER JOIN
-        prod_swe_access.t_celonis_products celonis_products
+        prod_swe_access.V_CELONIS_PRODUCTS celonis_products
     ON
-        order_lines.product_id = celonis_products.product_id
+        order_lines.product_id = celonis_products.row_id
     LEFT JOIN
         prod_swe_access.t_siebel_account_latest_state accounts
     ON
@@ -35,6 +36,11 @@ CREATE VIEW prod_swe_access.V_CELONIS_ORDER_LINE AS (
         prod_swe_base.t_blacklisted_cirrus_customers blacklist
     ON
         accounts.ts_customer_id = blacklist.tscid
+    LEFT JOIN
+        prod_swe_access.t_siebel_address_latest_state addr
+    ON
+        addr.row_id = order_lines.ship_to_address_id
+
     WHERE
         (order_lines.completed_date >= '2021-06-01' OR order_lines.created_date >=  '2021-06-01' )
         AND
@@ -55,5 +61,6 @@ CREATE VIEW prod_swe_access.V_CELONIS_ORDER_LINE AS (
         order_lines.ts_mdu_activation_type,
         order_lines.ts_mdu_delivery_contract_num,
         order_lines.milestone,
-        order_lines.ts_hardware_milestone
+        order_lines.ts_hardware_milestone,
+        addr.ts_fiber_status
 );

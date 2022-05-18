@@ -1,4 +1,4 @@
-CREATE VIEW prod_swe_access.V_CELONIS_ORDER_HEADER AS (
+CREATE OR REPLACE VIEW prod_swe_access.V_CELONIS_ORDER_HEADER AS (
     SELECT
         orders.created_date,
         orders.row_id,
@@ -10,10 +10,10 @@ CREATE VIEW prod_swe_access.V_CELONIS_ORDER_HEADER AS (
         orders.status AS order_status,
         orders.ts_channel_name,
         orders.ts_order_sub_type,
-        MIN(orders.last_updated_date),
-        CASE WHEN colle_orders.order_row_id_qo IS NOT NUll THEN 'Y' ELSE 'N' END AS collective_order_flag,
-        colle_orders.ts_mdu_network_name,
-        MIN(orders.ing_year*10000+orders.ing_month*100+orders.ing_day) ingestion_date,
+        MIN(orders.last_updated_date) last_update_date,
+        IF(colle_orders.order_row_id_qo IS NOT NUll,'Y','N') AS collective_order_flag,
+        colle_orders.ts_mdu_network_name,orders.ts_preorder_flag,orders.ts_bulk_order,
+        MIN(orders.ing_year*10000+orders.ing_month*100+orders.ing_day) AS ingestion_date,
         MIN(orders.cdl_ingest_time) AS cdl_ingest_time
     FROM
         prod_swe_base.t_siebel_order orders
@@ -22,9 +22,9 @@ CREATE VIEW prod_swe_access.V_CELONIS_ORDER_HEADER AS (
     ON
         orders.row_id = order_lines.order_header_id
     INNER JOIN
-        prod_swe_access.t_celonis_products celonis_products
+        prod_swe_access.v_celonis_products celonis_products
     ON
-        order_lines.product_id = celonis_products.product_id
+        order_lines.product_id = celonis_products.row_id
     LEFT JOIN
         prod_swe_access.t_siebel_account_latest_state accounts
     ON
@@ -100,5 +100,7 @@ CREATE VIEW prod_swe_access.V_CELONIS_ORDER_HEADER AS (
         orders.ts_channel_name,
         orders.ts_order_sub_type,
         colle_orders.order_row_id_qo,
-        colle_orders.ts_mdu_network_name
+        colle_orders.ts_mdu_network_name,
+        orders.ts_preorder_flag,
+        orders.ts_bulk_order
 );
