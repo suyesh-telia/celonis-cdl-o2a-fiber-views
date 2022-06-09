@@ -14,11 +14,6 @@ CREATE VIEW prod_swe_access.V_CELONIS_SNOW_CASE AS (
         snow_case.case_subcategory,
         snow_case.opened_by_group,
         snow_case.assignment_group,
-        snow_case.assigned_to,
-        snow_case.created_by,
-        snow_case.updated_by,
-        snow_case.resolved_by,
-        snow_case.closed_by,
         snow_case.user_id,
         snow_case.created_at,
         CAST(
