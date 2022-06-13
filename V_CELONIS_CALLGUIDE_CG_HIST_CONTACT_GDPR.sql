@@ -1,6 +1,7 @@
 CREATE VIEW prod_swe_access.V_CELONIS_CALLGUIDE_CG_HIST_CONTACT_GDPR AS (
     SELECT
         DISTINCT
+        si_acc.ts_customer_id,
         callguide_contact_gdpr.auto_service_time,
         callguide_contact_gdpr.call_connected_time,
         callguide_contact_gdpr.calls_merged_time,
@@ -98,6 +99,18 @@ CREATE VIEW prod_swe_access.V_CELONIS_CALLGUIDE_CG_HIST_CONTACT_GDPR AS (
         prod_swe_base.t_blacklisted_cirrus_customers blacklist
     ON
         latest_accounts.ts_customer_id = blacklist.tscid
+    LEFT JOIN
+    (
+        SELECT DISTINCT
+            `location`,
+            ts_customer_id
+        FROM prod_swe_access.t_siebel_account_latest_state
+        WHERE account_type_code = 'Customer'
+    )
+    AS
+        si_acc
+    ON
+        si_acc.`location` = callguide_contact_gdpr.customer_identification_number
     WHERE
         permissions.cust_helix_pur1033 IS NULL
         AND
