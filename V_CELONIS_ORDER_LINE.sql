@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW prod_swe_access.V_CELONIS_ORDER_LINE AS (
-    SELECT
+SELECT
         order_lines.action_code,
         order_lines.created_date AS orderline_created_date,
         order_lines.due_date AS ordeline_due_date,
@@ -15,8 +15,8 @@ CREATE OR REPLACE VIEW prod_swe_access.V_CELONIS_ORDER_LINE AS (
         IF(order_lines.ts_mdu_delivery_contract_num IS NULL, 'False', 'True') AS ts_multi_dwelling_unit_delivery_contract_num,
         order_lines.milestone AS order_milestone,
         order_lines.ts_hardware_milestone,
-        addr.ts_fiber_status AS ts_fiber_status_ord,
-        addr1.ts_fiber_status AS ts_fiber_status_asset,
+        addr.ts_fiber_status as ts_fiber_status_ord,
+asset1.ts_fiber_status as ts_fiber_status,
         MIN(order_lines.ing_year*10000+order_lines.ing_month*100+order_lines.ing_day) ingestion_date,
         MIN(order_lines.cdl_ingest_time) AS cdl_ingest_time
     FROM
@@ -42,17 +42,15 @@ CREATE OR REPLACE VIEW prod_swe_access.V_CELONIS_ORDER_LINE AS (
     ON
         addr.row_id = order_lines.ship_to_address_id
     LEFT JOIN
-        prod_swe_access.t_siebel_asset_latest_state asset
-    ON
-        asset.integration_id = order_lines.asset_integration_id
-    AND
-        asset.product_id = order_lines.product_id
-    AND
-        accounts.`location` = asset.acc_service_location
-    LEFT JOIN
-        prod_swe_access.t_siebel_address_latest_state addr1
-    ON
-        addr1.row_id = asset.ts_move_address_id
+    (
+    select integration_id, ts_move_address_id, addr1.ts_fiber_status from prod_swe_access.t_siebel_asset_latest_state asset
+    inner join prod_swe_access.t_siebel_address_latest_state addr1
+    on asset.ts_move_address_id = addr1.row_id
+    inner join prod_swe_access.v_celonis_products cprod1
+    on cprod1.row_id = asset.product_id
+    group by integration_id, ts_move_address_id, addr1.ts_fiber_status
+    ) as asset1
+    on asset1.integration_id = order_lines.asset_integration_id
     WHERE
         (order_lines.completed_date >= '2021-06-01' OR order_lines.created_date >=  '2021-06-01' )
         AND
@@ -75,5 +73,5 @@ CREATE OR REPLACE VIEW prod_swe_access.V_CELONIS_ORDER_LINE AS (
         order_lines.milestone,
         order_lines.ts_hardware_milestone,
         addr.ts_fiber_status,
-        addr1.ts_fiber_status
+        asset1.ts_fiber_status
 );
