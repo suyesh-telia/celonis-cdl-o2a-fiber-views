@@ -16,7 +16,10 @@ SELECT
         order_lines.milestone AS order_milestone,
         order_lines.ts_hardware_milestone,
         addr.ts_fiber_status as ts_fiber_status_ord,
-asset1.ts_fiber_status as ts_fiber_status,
+        asset1.ts_fiber_status as ts_fiber_status,
+        celonis_products.product_name,
+        celonis_products.product_category,
+        celonis_products.product_sub_category,
         MIN(order_lines.ing_year*10000+order_lines.ing_month*100+order_lines.ing_day) ingestion_date,
         MIN(order_lines.cdl_ingest_time) AS cdl_ingest_time
     FROM
@@ -73,5 +76,8 @@ asset1.ts_fiber_status as ts_fiber_status,
         order_lines.milestone,
         order_lines.ts_hardware_milestone,
         addr.ts_fiber_status,
-        asset1.ts_fiber_status
+        asset1.ts_fiber_status,
+        celonis_products.product_name,
+        celonis_products.product_category,
+        celonis_products.product_sub_category
 );
