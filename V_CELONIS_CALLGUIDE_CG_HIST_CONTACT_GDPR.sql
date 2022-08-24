@@ -10,6 +10,7 @@ CREATE VIEW prod_swe_access.V_CELONIS_CALLGUIDE_CG_HIST_CONTACT_GDPR AS (
         callguide_contact_gdpr.close_time,
         callguide_contact_gdpr.contact_delivered_time,
         callguide_contact_gdpr.contact_established_time,
+        callguide_contact_gdpr.contact_id,
         callguide_contact_gdpr.contact_source_type,
         callguide_contact_gdpr.contact_transfered_time,
         callguide_contact_gdpr.create_time,
