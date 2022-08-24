@@ -1,5 +1,5 @@
-CREATE OR REPLACE VIEW prod_swe_access.v_celonis_order_header AS
-(SELECT orders.created_date,
+create or replace view prod_swe_access.v_celonis_order_header as
+(select orders.created_date,
  orders.row_id,
  accounts.ts_customer_id ts_cid,
  orders.order_date,
@@ -36,8 +36,8 @@ from prod_swe_access.t_siebel_order_latest_state ord1 inner join
 prod_swe_access.t_siebel_order_line_item_latest_state oli1
 on oli1.order_header_id = ord1.row_id
 inner join prod_swe_access.t_siebel_quote_latest_state quote
-ON oli1.ts_mdu_delivery_contract_num = quote.ts_mdu_delivery_contract_num
- AND oli1.ts_mdu_delivery_contract_rev_num = quote.revision
+on oli1.ts_mdu_delivery_contract_num = quote.ts_mdu_delivery_contract_num
+ and oli1.ts_mdu_delivery_contract_rev_num = quote.revision
  and quote.quote_type = 'MDU Quote'
 inner join prod_swe_access.v_celonis_products prd
 on prd.row_id = oli1.product_id
@@ -49,28 +49,28 @@ and ord1.ts_order_sub_type in ('Change Access','New','Move')
 and ord1.created_date >= '2021-06-01') network_name
 on orders.order_number = network_name.order_number
 and network_name.filter_row=1
- LEFT OUTER JOIN (SELECT DISTINCT ord.row_id order_row_id_qo,
+ LEFT OUTER JOIN (select distinct ord.row_id order_row_id_qo,
  ord.order_number order_number_qo,
  q.ts_mdu_network_name
  from prod_swe_access.t_siebel_order_latest_state ord
- INNER JOIN prod_swe_access.t_siebel_order_line_item_latest_state ol
- ON ol.order_header_id = ord.row_id
- INNER JOIN prod_swe_access.t_siebel_product_latest_state prod
- ON ol.product_id = prod.row_id
- INNER JOIN prod_swe_access.t_siebel_quote_latest_state q
- ON ol.ts_mdu_delivery_contract_num = q.ts_mdu_delivery_contract_num
- AND ol.ts_mdu_delivery_contract_rev_num = q.revision
- AND q.quote_type = 'MDU Quote'
- INNER JOIN prod_swe_access.t_siebel_quote_item_latest_state qi_coll
- ON qi_coll.quote_id = q.row_id
- AND qi_coll.action_code != 'Delete'
- AND ol.product_id = qi_coll.product_id
- AND qi_coll.adjusted_list_price = 0
- INNER JOIN prod_swe_access.t_siebel_product_latest_state prd_coll
- ON qi_coll.product_id = prd_coll.row_id
- AND prd_coll.ts_product_line = 'Telia SP'
- AND prd_coll.billing_type = 'Subscription'
- WHERE ol.completed_date >= '2021-06-01' OR ol.created_date >= '2021-06-01') colle_orders
+ inner join prod_swe_access.t_siebel_order_line_item_latest_state ol
+ on ol.order_header_id = ord.row_id
+ inner join prod_swe_access.t_siebel_product_latest_state prod
+ on ol.product_id = prod.row_id
+ inner join prod_swe_access.t_siebel_quote_latest_state q
+ on ol.ts_mdu_delivery_contract_num = q.ts_mdu_delivery_contract_num
+ and ol.ts_mdu_delivery_contract_rev_num = q.revision
+ and q.quote_type = 'MDU Quote'
+ inner join prod_swe_access.t_siebel_quote_item_latest_state qi_coll
+ on qi_coll.quote_id = q.row_id
+ and qi_coll.action_code != 'Delete'
+ and ol.product_id = qi_coll.product_id
+ and qi_coll.adjusted_list_price = 0
+ inner join prod_swe_access.t_siebel_product_latest_state prd_coll
+ on qi_coll.product_id = prd_coll.row_id
+ and prd_coll.ts_product_line = 'Telia SP'
+ and prd_coll.billing_type = 'Subscription'
+ where ol.completed_date >= '2021-06-01' or ol.created_date >= '2021-06-01') colle_orders
  ON colle_orders.order_row_id_qo = orders.row_id
  WHERE (order_lines.completed_date >= '2021-06-01' OR order_lines.created_date >= '2021-06-01')
  AND permissions.cust_helix_pur1033 IS NULL
