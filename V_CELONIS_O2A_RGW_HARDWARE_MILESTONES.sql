@@ -1,5 +1,6 @@
-CREATE OR REPLACE VIEW prod_swe_access.V_CELONIS_O2A_RGW_HARDWARE_MILESTONES AS (
-    WITH cte as(
+CREATE OR REPLACE VIEW prod_swe_access.V_CELONIS_O2A_RGW_HARDWARE_MILESTONES AS
+    WITH cte AS
+    (
         SELECT
         row_id,
         ts_hardware_milestone,
@@ -32,4 +33,4 @@ CREATE OR REPLACE VIEW prod_swe_access.V_CELONIS_O2A_RGW_HARDWARE_MILESTONES AS 
         ts_hardware_milestone,
         first_updated_date,
         last_updated_date
-);
+;
