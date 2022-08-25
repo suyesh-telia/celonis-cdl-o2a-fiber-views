@@ -21,9 +21,14 @@ SELECT
         celonis_products.product_category,
         celonis_products.product_sub_category,
         MIN(order_lines.ing_year*10000+order_lines.ing_month*100+order_lines.ing_day) ingestion_date,
-        MIN(order_lines.cdl_ingest_time) AS cdl_ingest_time
+        MIN(order_lines.cdl_ingest_time) AS cdl_ingest_time,
+        price.original_list_price
     FROM
         prod_swe_base.t_siebel_order_line_item order_lines
+    INNER JOIN
+        prod_swe_access.t_siebel_product_price_list_item_latest_state price
+    ON
+        order_lines.product_id = price.product_id
     INNER JOIN
         prod_swe_access.V_CELONIS_PRODUCTS celonis_products
     ON
