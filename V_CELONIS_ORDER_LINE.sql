@@ -84,5 +84,6 @@ SELECT
         asset1.ts_fiber_status,
         celonis_products.product_name,
         celonis_products.product_category,
-        celonis_products.product_sub_category
+        celonis_products.product_sub_category,
+        price.original_list_price
 );
