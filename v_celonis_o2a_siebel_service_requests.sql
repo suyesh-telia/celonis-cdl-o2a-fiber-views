@@ -31,15 +31,17 @@ SELECT
     ,sr.ts_service_type
     ,sr.created_date
 
-    ,MAX(CASE WHEN status_dates.status = 'Open' AND status_dates.sub_status = 'Assigned' THEN status_dates.status_date END)             AS open_assigned
-    ,MAX(CASE WHEN status_dates.status = 'Resolved' THEN status_dates.status_date END)                                                  AS resolved_date
-    ,MAX(CASE WHEN status_dates.status = 'Closed' THEN status_dates.status_date END)                                                    AS closed_date
-    ,MAX(CASE WHEN status_dates.status = 'Cancelled' THEN status_dates.status_date END)                                                 AS cancelled_date
-    ,MAX(CASE WHEN status_dates.status = 'Service Activation' THEN status_dates.status_date END)                                        AS service_activation
-    ,MAX(CASE WHEN status_dates.status = 'Open' AND status_dates.sub_status = 'Unassigned' THEN status_dates.status_date END)           AS open_unassigned
-    ,MAX(CASE WHEN status_dates.status = 'Open' AND status_dates.sub_status = 'Work In Progress' THEN status_dates.status_date END)     AS open_work_in_progress
-    ,MAX(CASE WHEN status_dates.status = 'Open' AND status_dates.sub_status = 'Waiting on Customer' THEN status_dates.status_date END)  AS open_waiting_on_customer
-    ,MAX(CASE WHEN status_dates.status = 'Open' AND status_dates.sub_status = 'Follow Up' THEN status_dates.status_date END)            AS open_follow_up
+    ,MAX(CASE WHEN status_dates.status = 'Open' AND status_dates.sub_status = 'Assigned' THEN CAST(status_dates.status_date AS TIMESTAMP) END)             AS open_assigned
+
+    ,MAX(CASE WHEN status_dates.status = 'Resolved' THEN CAST(status_dates.status_date AS TIMESTAMP) END)              AS resolved_date
+    ,MAX(CASE WHEN status_dates.status = 'Closed' THEN CAST(status_dates.status_date AS TIMESTAMP) END)                AS closed_date
+    ,MAX(CASE WHEN status_dates.status = 'Cancelled' THEN CAST(status_dates.status_date AS TIMESTAMP) END)             AS cancelled_date
+    ,MAX(CASE WHEN status_dates.status = 'Service Activation' THEN CAST(status_dates.status_date AS TIMESTAMP) END)    AS service_activation
+
+    ,MAX(CASE WHEN status_dates.status = 'Open' AND status_dates.sub_status = 'Unassigned' THEN CAST(status_dates.status_date AS TIMESTAMP) END)           AS open_unassigned
+    ,MAX(CASE WHEN status_dates.status = 'Open' AND status_dates.sub_status = 'Work In Progress' THEN CAST(status_dates.status_date AS TIMESTAMP) END)     AS open_work_in_progress
+    ,MAX(CASE WHEN status_dates.status = 'Open' AND status_dates.sub_status = 'Waiting on Customer' THEN CAST(status_dates.status_date AS TIMESTAMP) END)  AS open_waiting_on_customer
+    ,MAX(CASE WHEN status_dates.status = 'Open' AND status_dates.sub_status = 'Follow Up' THEN CAST(status_dates.status_date AS TIMESTAMP) END)            AS open_follow_up
 
 FROM prod_swe_access.t_siebel_service_request_latest_state AS sr
 
@@ -61,3 +63,14 @@ GROUP BY     sr.row_id
             ,sr.ts_service_type
             ,sr.created_date
 ;
+
+/*
+
+SELECT
+sr.area
+, count(DISTINCT sr.row_id)
+FROM prod_swe_base.t_siebel_service_request AS sr
+GROUP BY sr.area
+ORDER BY count(DISTINCT sr.row_id) DESC;
+
+*/
