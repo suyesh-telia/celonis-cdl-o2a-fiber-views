@@ -14,11 +14,7 @@ SELECT
     CAST(delivering_time AS TIMESTAMP) AS delivering_time,
     CAST(contact_delivered_time AS TIMESTAMP) AS contact_delivered_time,
     CAST(contact_established_time AS TIMESTAMP) AS contact_established_time,
-    CAST(close_time AS TIMESTAMP) AS close_time,
-    concat_ws(",", collect_list(CAST(connected_by AS STRING))) AS connected_by_id,
-    concat_ws(",", collect_list(CAST(udata_key AS STRING))) AS connected_by_keys
-    --group_concat(CAST(connected_by AS STRING), ', ') AS connected_by_id,
-    --group_concat(CAST(udata_key AS STRING), ', ') AS connected_by_keys
+    CAST(close_time AS TIMESTAMP) AS close_time
 FROM
     prod_swe_access.v_celonis_o2a_ace_udata_powerbi
 GROUP BY
