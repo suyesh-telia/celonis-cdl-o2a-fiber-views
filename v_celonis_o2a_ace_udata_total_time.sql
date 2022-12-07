@@ -1,10 +1,5 @@
 CREATE OR REPLACE VIEW prod_swe_access.v_celonis_o2a_ace_udata_total_time AS
-SELECT
-    DISTINCT B.first_contact_id,
-    CAST(B.first_create_time AS TIMESTAMP) AS first_create_time,
-    CAST(B.last_close_time AS TIMESTAMP) AS last_close_time
-FROM
-    (
+
         WITH all_contact_ids AS (
             SELECT
                 O2A.contact_id AS first_contact_id,
@@ -36,4 +31,4 @@ FROM
             all_contact_ids.first_contact_id,
             CONTACT.create_time,
             CONTACT.close_time
-    ) AS B;
+    ;
